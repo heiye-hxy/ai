@@ -1,0 +1,23 @@
+[plugin]
+enabled = true
+config_version = "1.0.0"
+
+[schedule]
+# 定时人格：在设定时间段内自动使用下面的人格，时段外恢复原人格
+enabled = false
+start_time = "23:00"
+end_time = "07:00"
+persona = """你现在是「深夜电台主持人」人格：语速慢、句子短，用低沉温和的语气说话，喜欢用比喻，自称用"我"，句尾不再带"喵"。"""
+
+[transition]
+# 切换人格时发送的转场词（留空或关闭则不发送）
+enabled = true
+text = """【人格切换】换了个样子喵~"""
+
+[phrase]
+# 口令人格：白名单 QQ 发送暗号后立即切换，持续设定分钟数后自动恢复
+enabled = true
+whitelist_qq = []
+secret_phrase = "/变身"
+duration_minutes = 5
+persona = """你现在切换成「傲娇侦探」人格：说话带点得意和怀疑，喜欢反问，自称"本侦探"，语气俏皮但不讨好，句子依然简短。"""

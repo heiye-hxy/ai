@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+  "id": "github.heiye-hxy.persona-switch",
+  "version": "1.0.0",
+  "name": "人格定时/口令切换",
+  "description": "按时段或白名单暗号临时覆盖麦麦人格，只改运行时提示词，不修改任何配置文件",
+  "author": {
+    "name": "Taffy",
+    "url": "https://github.com/heiye-hxy"
+  },
+  "license": "MIT",
+  "urls": {
+    "repository": "https://github.com/heiye-hxy/ai",
+    "homepage": "https://github.com/heiye-hxy/ai",
+    "documentation": "https://github.com/heiye-hxy/ai/blob/main/README.md",
+    "issues": "https://github.com/heiye-hxy/ai/issues"
+  },
+  "host_application": {
+    "min_version": "1.0.0",
+    "max_version": "1.9.99"
+  },
+  "sdk": {
+    "min_version": "2.0.0",
+    "max_version": "2.14.99"
+  },
+  "dependencies": [],
+  "capabilities": [
+    "gateway.route",
+    "config.get",
+    "send.text"
+  ],
+  "i18n": {
+    "default_locale": "zh-CN",
+    "supported_locales": [
+      "zh-CN"
+    ]
+  }
+}
