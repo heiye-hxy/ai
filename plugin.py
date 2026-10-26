@@ -274,19 +274,23 @@ class PersonaSwitchPlugin(MaiBotPlugin):
         return False
 
     def _apply_planner_persona(self, items: List[Any], persona: str) -> bool:
-        """替换 planner 系统提示词里的行为风格段，保留工具使用说明。"""
-        pattern = re.compile(r"(的行为风格：)([\s\S]*?)(\n\n以上)", re.S)
+        """替换 planner 系统提示词里的行为风格段，兼容标准版与优化版模板。"""
+        patterns = (
+            re.compile(r"(的行为风格：)([\s\S]*?)(\n\n以上)", re.S),
+            re.compile(r"(你的行为风格是：)([\s\S]*?)(\n\n)", re.S),
+        )
         for part in self._iter_system_text_parts(items):
             text = part["text"]
-            new_text, count = pattern.subn(
-                lambda match: match.group(1) + persona + match.group(3),
-                text,
-                count=1,
-            )
-            if count:
-                part["text"] = new_text
-            else:
-                part["text"] = f"【临时人格（优先级最高）】\n{persona}\n\n{text}"
+            for pattern in patterns:
+                new_text, count = pattern.subn(
+                    lambda match: match.group(1) + persona + match.group(3),
+                    text,
+                    count=1,
+                )
+                if count:
+                    part["text"] = new_text
+                    return True
+            part["text"] = f"【临时人格（优先级最高）】\n{persona}\n\n{text}"
             return True
         return False
 

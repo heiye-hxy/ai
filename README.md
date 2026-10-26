@@ -28,7 +28,7 @@
 | Hook | 作用 |
 |---|---|
 | `chat.receive.before_process` | 解析入站消息，判断白名单与暗号；定时时段的首条消息触发转场词 |
-| `maisaka.planner.before_request` | 替换 planner 系统提示词里的「XX 的行为风格：…」段落 |
+| `maisaka.planner.before_request` | 替换 planner 系统提示词里的行为风格段落（兼容标准版「XX 的行为风格：…」与优化版「你的行为风格是：…」两种模板） |
 | `maisaka.replyer.before_request` | 给本次回复追加一条「临时人格优先」的要求（兜底） |
 | `maisaka.replyer.before_model_request` | 替换 replyer 系统提示词里的身份段 |
 
@@ -57,8 +57,9 @@
    MaiBot/plugins/maibot-persona-switch/
      _manifest.json
      plugin.py
-     config.toml
    ```
+
+   `config.toml` 不需要手动创建：首次加载时 Runner 会依据插件声明的 `config_model` 生成并维护它。
 
 2. 等待插件文件监视器自动重载，或在 WebUI 里重载插件。
 3. 打开 WebUI → 插件 → 「人格定时/口令切换」，确认配置项已出现。
@@ -67,7 +68,7 @@
 
 ## 配置说明
 
-所有配置都在 WebUI 中可编辑，也可以直接改 `config.toml`（保存后热重载生效）。
+所有配置都在 WebUI 中可编辑。对应的 `config.toml` 由 Runner 在首次加载时依据 `config_model` 生成并维护，保存后热重载生效。
 
 ### 插件
 
@@ -189,11 +190,11 @@ duration_minutes = 30
 整体替换会丢掉输出格式约束和工具使用说明，容易导致回复格式崩坏或规划能力下降。插件只替换人格段落，保留其余部分。
 
 **Q：需要什么权限？**
-`gateway.route`（接收消息事件）、`send.text`（发送转场词）、`config.get`（读取配置）。
+只有 `send.text`（发送转场词）。消息监听与提示词改写走 Hook，不需要额外能力。
 
 **Q：支持哪些版本？**
 实测环境：MaiBot 1.3.9 + MaiBot Plugin SDK 2.14.0。
-manifest 声明兼容范围：Host `1.0.0–1.9.99`，SDK `2.0.0–2.14.99`。
+manifest 声明兼容范围：Host `1.0.0–1.3.99`，SDK `2.0.0–2.14.99`。
 
 ---
 
@@ -203,15 +204,22 @@ manifest 声明兼容范围：Host `1.0.0–1.9.99`，SDK `2.0.0–2.14.99`。
 maibot-persona-switch/
   _manifest.json   # 插件清单（Manifest v2）
   plugin.py        # 插件入口
-  config.toml      # 默认配置
   README.md        # 说明文档
   LICENSE          # MIT
-  SUBMIT.md        # 提交到插件中心的步骤
+  .gitignore       # 忽略运行时生成的 config.toml
 ```
+
+> `config.toml` 属于运行时文件，由 Runner 依据 `config_model` 生成，因此不纳入仓库。
 
 ---
 
 ## 更新日志
+
+### 1.0.1
+- 仓库不再提交 `config.toml`，改由 Runner 生成并维护；补充 `.gitignore`
+- `capabilities` 收敛为实际需要的 `send.text`
+- `host_application.max_version` 收窄到 `1.3.99`，与实测版本一致
+- planner 人格替换同时兼容标准版与优化版两种提示词模板
 
 ### 1.0.0
 - 定时人格（支持跨天）
